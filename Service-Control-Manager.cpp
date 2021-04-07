@@ -2,6 +2,9 @@
 Author: Bahirah Adewunmi
 March 16 - April 8, 2021
 Recreation of Service Control Manager-sc.exe [version 2.1]
+
+
+For more information on error codes visit:https://docs.microsoft.com/en-us/windows/win32/debug/system-error-codes
 */
 
 #include <windows.h>
@@ -11,6 +14,7 @@ Recreation of Service Control Manager-sc.exe [version 2.1]
 #include <string>
 #include <iostream>
 #include <boost/program_options.hpp>
+//TODO: Delete std
 
 using namespace std;
 namespace po=boost::program_options;
@@ -18,50 +22,50 @@ namespace po=boost::program_options;
 int main(int argc, const char *argv[])
 {
     SC_HANDLE schSCManager;
-    std::string service_name;
-    std::string  binary_path;
-    std::string  loadordergroup;
-    std::string  depend;
-    std::string  obj; 
-    std::string  display_name;
-    std::string  password;
-    std::string reboot;
-    std::string command;
-    std::string actions;
+    string service_name;
+    string  binary_path;
+    string  loadordergroup;
+    string  depend;
+    string  obj; 
+    string  display_name;
+    string  password;
+    string reboot;
+    string command;
+    string actions;
 
     try
     {
         po::options_description desc("Switches");
         desc.add_options()
-            ("help", "I'm unable to take a string variable")
-            ("query", po::value<std::string>(&service_name)->implicit_value(""), "query") 
-            ("create", po::value<std::string>(&service_name)->implicit_value(""), "Create a service. (add it to the registry)")
-            ("qdescription", po::value<std::string>(&service_name), "Queries the description for a service.")
-            ("start", po::value<std::string>(&service_name), "start service")
-            ("delete", po::value<std::string>(&service_name), "Delete a service (from the registry)")
-            ("config", po::value<std::string>(&service_name), "permanently change the service configuration")
-            ("failure", po::value<std::string>(&service_name), "Change the actions taken by a service upon failure")
+            ("query", po::value<string>(&service_name)->implicit_value(""), "query") 
+            ("create", po::value<string>(&service_name)->implicit_value(""), "Create a service. (add it to the registry)")
+            ("qdescription", po::value<string>(&service_name), "Queries the description for a service.")
+            ("start", po::value<string>(&service_name), "start service")
+            ("delete", po::value<string>(&service_name), "Delete a service (from the registry)")
+            ("config", po::value<string>(&service_name), "permanently change the service configuration")
+            ("failure", po::value<string>(&service_name), "Change the actions taken by a service upon failure")
+            ("stop", po::value<string>(&service_name), "Sends a STOP request to a service.")
 
             //query switches 
-            ("type=", po::value<std::string>(), "Specifies the type of services or type of drivers to be enumerated")
-            ("state=", po::value<std::string>(), "Specifies the started state of the service to be enumerated.")
+            ("type=", po::value<string>(), "Specifies the type of services or type of drivers to be enumerated")
+            ("state=", po::value<string>(), "Specifies the started state of the service to be enumerated.")
             ("bufsize", po::value<int>(), "Specifies the size (in bytes) of the enumeration buffer.")
             ("ri=", po::value<int>(), "ri")
-            ("group=", po::value<std::string>(), "group")
+            ("group=", po::value<string>(), "group")
 
             //create switches + type
-            ("start=", po::value<std::string>(), "Specifies the start type for the service.")
-            ("error=", po::value<std::string>(), "The severity of the error, and action taken, if this service fails to start.")
+            ("start=", po::value<string>(), "Specifies the start type for the service.")
+            ("error=", po::value<string>(), "The severity of the error, and action taken, if this service fails to start.")
             ("binpath=", po::value(&binary_path)->default_value(""), "Specifies a path to the service binary file.")
             ("group=", po::value(&loadordergroup)->default_value(""), "Specifies the name of the group of which this service is a member")
-            ("tag=", po::value<std::string>(), "Specifies whether or not to obtain a TagID from the CreateService call")
+            ("tag=", po::value<string>(), "Specifies whether or not to obtain a TagID from the CreateService call")
             ("depend", po::value(&depend)->default_value(""), "Specifies the names of services or groups that must start before this service. The names are separated by forward slashes (/)")
             ("obj=", po::value(&obj)->default_value(""), "Specifies a name of an account in which a service will run, or specifies a name of the Windows driver object in which the driver will run")
             ("displayname=", po::value(&display_name)->default_value(""), "Specifies a friendly name for identifying the service in user interface programs")
             ("password=", po::value(&password)->default_value(""), "Specifies a password. This is required if an account other than the LocalSystem account is used.")
 
             //failure switches
-            ("actions=", po::value<std::string>(&actions)->default_value(""), "Specifies one or more failure actions and their delay times (in milliseconds), separated by a forward slash (/)")
+            ("actions=", po::value<string>(&actions)->default_value(""), "Specifies one or more failure actions and their delay times (in milliseconds), separated by a forward slash (/)")
             ("reboot=", po::value<>(&reboot), "Specifies the message to be broadcast when a service fails.")
             ("command=", po::value<>(&command), "Specifies the command-line command to be run when the specified service fails")
             ("reset=", po::value<int>()->default_value(2), "Specifies the length of the period (in seconds) with no failures after which the failure count should be reset to 0 (zero)")
@@ -94,50 +98,50 @@ int main(int argc, const char *argv[])
             //Obtains and displays information about the specified service, 
             //driver, type of service, or type of driver.
 
-            // std::cout << "Test: Query was passed";
+            // cout << "Test: Query was passed";
 
             //returns the most recent service 
             //status information reported to the service control manager.
             DWORD service_type;
             if (vm.count("type="))
             {
-                if (vm["type="].as<std::string>() == "all")
+                if (vm["type="].as<string>() == "all")
                 {
                     service_type = (SERVICE_WIN32 | SERVICE_DRIVER);
                 }
-                else if (vm["type="].as<std::string>() == "driver")
+                else if (vm["type="].as<string>() == "driver")
                 {
                     service_type = SERVICE_DRIVER;
                 }
-                else if (vm["type="].as<std::string>() == "services")
+                else if (vm["type="].as<string>() == "services")
                 {
                     service_type = SERVICE_WIN32;
                 }
-                else if (vm["type="].as<std::string>() == "own")
+                else if (vm["type="].as<string>() == "own")
                 {
                     service_type = SERVICE_WIN32_OWN_PROCESS;
                 }
-                else if (vm["type="].as<std::string>() == "share")
+                else if (vm["type="].as<string>() == "share")
                 {
                     service_type = SERVICE_WIN32_SHARE_PROCESS;
                 }
-                else if (vm["type="].as<std::string>() == "kernel")
+                else if (vm["type="].as<string>() == "kernel")
                 {
                     service_type = SERVICE_KERNEL_DRIVER;
                 }
-                else if (vm["type="].as<std::string>() == "filesys")
+                else if (vm["type="].as<string>() == "filesys")
                 {
                     service_type = SERVICE_FILE_SYSTEM_DRIVER;
                 }
-                else if (vm["type="].as<std::string>() == "interact type= own" || "own type= share" )
+                else if (vm["type="].as<string>() == "interact type= own" || "own type= share" )
                 {
                     service_type = (SERVICE_WIN32_OWN_PROCESS | SERVICE_INTERACTIVE_PROCESS);
                 }
-                else if (vm["type="].as<std::string>() == "interact type= share" || "share type= interact")
+                else if (vm["type="].as<string>() == "interact type= share" || "share type= interact")
                 {
                     service_type = (SERVICE_WIN32_SHARE_PROCESS | SERVICE_INTERACTIVE_PROCESS);
                 }
-                //Not doing the rec or adapt switches, which aren't defined in documentation
+                //Not doing the rec or adapt switches because they aren't defined in documentation
             }
             else
             {
@@ -148,11 +152,11 @@ int main(int argc, const char *argv[])
             DWORD service_state;
             if (vm.count("state="))
             {                
-                if (vm["state="].as<std::string>() == "active") 
+                if (vm["state="].as<string>() == "active") 
                 {
                     service_state = SERVICE_ACTIVE;
                 }
-                else if (vm["state="].as<std::string>() == "inactive")
+                else if (vm["state="].as<string>() == "inactive")
                 {
                     service_state = SERVICE_INACTIVE;
                 }
@@ -188,7 +192,7 @@ int main(int argc, const char *argv[])
             const char* groupname;
             if (vm.count("group="))
             {
-                groupname = vm["group="].as<std::string>().c_str();
+                groupname = vm["group="].as<string>().c_str();
             }
             else
             {
@@ -197,14 +201,9 @@ int main(int argc, const char *argv[])
 
 
             //If no specific value passed, enumerate through all services
-            if (vm["query"].as<std::string>()=="")
+            if (vm["query"].as<string>()=="")
             {
                 // First return the required size for enumerating the service query
-
-                /* lpServicesReturned/numServices A pointer to the number of service
-                  entries returned &
-                 spaceNeeded/pcbBytesNeeded, A pointer to the number of bytes needed
-                 to return the remaining service entries, if the buffer is too small. */
 
                 DWORD numServices = 0;
                 DWORD spaceNeeded = 0;
@@ -257,93 +256,93 @@ int main(int argc, const char *argv[])
                         }
                         else
                         {
-                            std::wcout << "SERVICE_NAME: " << service.lpServiceName << "\n";
-                            std::wcout << "DISPLAY_NAME: " << service.lpDisplayName << "\n";
-                            std::wcout << "\tTYPE\t\t\t: " << service_status_address.dwServiceType;
+                            wcout << "SERVICE_NAME: " << service.lpServiceName << "\n";
+                            wcout << "DISPLAY_NAME: " << service.lpDisplayName << "\n";
+                            wcout << "\tTYPE\t\t\t: " << service_status_address.dwServiceType;
                             switch (service_status_address.dwServiceType){
                                 case SERVICE_FILE_SYSTEM_DRIVER:
-                                    std::wcout << "  FILE_SYSTEM_DRIVER\n";
+                                    wcout << "  FILE_SYSTEM_DRIVER\n";
                                     break;
                                 case SERVICE_WIN32:
-                                    std::wcout << "  WIN32\n";
+                                    wcout << "  WIN32\n";
                                     break;
                                 case SERVICE_KERNEL_DRIVER:
-                                    std::wcout << "  KERNEL_DRIVER\n";
+                                    wcout << "  KERNEL_DRIVER\n";
                                     break;
                                 case SERVICE_WIN32_OWN_PROCESS:
-                                    std::wcout << "  WIN32_OWN_PROCESS\n";
+                                    wcout << "  WIN32_OWN_PROCESS\n";
                                     break;
                                 case SERVICE_WIN32_SHARE_PROCESS:
-                                    std::wcout << "  WIN32_SHARE_PROCESS\n";
+                                    wcout << "  WIN32_SHARE_PROCESS\n";
                                     break;
                                 case SERVICE_INTERACTIVE_PROCESS:
-                                    std::wcout << "  INTERACTIVE_PROCESS\n";
+                                    wcout << "  INTERACTIVE_PROCESS\n";
                                     break;
                                 default:
-                                    std::wcout << "  " << service_status_address.dwServiceType << "\n";
+                                    wcout << "  " << service_status_address.dwServiceType << "\n";
                                     break;
                             }
 
-                            std::wcout << "\tSTATE\t\t\t: " << service_status_address.dwCurrentState;
+                            wcout << "\tSTATE\t\t\t: " << service_status_address.dwCurrentState;
 
                             switch (service_status_address.dwCurrentState)
                             {
                             case SERVICE_RUNNING:
-                                std::wcout << "  RUNNING\n";
+                                wcout << "  RUNNING\n";
                                 break;
                             case SERVICE_STOPPED:
-                                std::wcout << "  STOPPED\n";
+                                wcout << "  STOPPED\n";
                                 break;
                             case SERVICE_CONTINUE_PENDING:
-                                std::wcout << "  CONTINUING\n";
+                                wcout << "  CONTINUING\n";
                                 break;
                             case SERVICE_PAUSE_PENDING:
-                                std::wcout << "  PAUSING\n";
+                                wcout << "  PAUSING\n";
                                 break;
                             case SERVICE_PAUSED:
-                                std::wcout << "  PAUSED\n";
+                                wcout << "  PAUSED\n";
                                 break;
                             case SERVICE_START_PENDING:
-                                std::wcout << "  STARTING\n";
+                                wcout << "  STARTING\n";
                                 break;
                             case SERVICE_STOP_PENDING:
-                                std::wcout << "  STOPPING\n";
+                                wcout << "  STOPPING\n";
                                 break;
                             default:
-                                std::wcout << "  " << service_status_address.dwCurrentState << "\n";
+                                wcout << "  " << service_status_address.dwCurrentState << "\n";
                                 break;
                             };
 
-                            std::wcout << " \t\t\t\t ";
+                            wcout << " \t\t\t\t ";
                             switch (service_status_address.dwControlsAccepted)
                             {
                             case SERVICE_ACCEPT_NETBINDCHANGE:
-                                std::wcout << "( ACCEPT_NETBINDCHANGE )\n";
+                                wcout << "( ACCEPT_NETBINDCHANGE )\n";
                                 break;
                             case SERVICE_ACCEPT_PARAMCHANGE:
-                                std::wcout << "( ACCEPT_PARAMCHANGE )\n";
+                                wcout << "( ACCEPT_PARAMCHANGE )\n";
                                 break;
                             case SERVICE_ACCEPT_PAUSE_CONTINUE:
-                                std::wcout << "( ACCEPT_PAUSE_CONTINUE )\n";
+                                wcout << "( ACCEPT_PAUSE_CONTINUE )\n";
                                 break;
                             case SERVICE_ACCEPT_PRESHUTDOWN:
-                                std::wcout << "( ACCEPT_PRESHUTDOWN )\n";
+                                wcout << "( ACCEPT_PRESHUTDOWN )\n";
                                 break;
                             case SERVICE_ACCEPT_SHUTDOWN:
-                                std::wcout << "( ACCEPT_SHUTDOWN )\n";
+                                wcout << "( ACCEPT_SHUTDOWN )\n";
                                 break;
                             case SERVICE_ACCEPT_STOP:
-                                std::wcout << "( STOPPABLE )\n";
+                                wcout << "( STOPPABLE )\n";
                                 break;
                             default:
-                                std::wcout << "( " << service_status_address.dwControlsAccepted << " )\n";
+                                wcout << "( " << service_status_address.dwControlsAccepted << " )\n";
                                 break;
                             };
-                            std::wcout << "\tWIN32_EXIT_CODE\t\t: " << service_status_address.dwWin32ExitCode << "\n";
-                            std::wcout << "\tSERVICE_EXIT_CODE\t: " << service_status_address.dwServiceSpecificExitCode << "\n";
-                            std::wcout << "\tCHECKPOINT\t\t: " << service_status_address.dwCheckPoint << "\n";
-                            std::wcout << "\tWAIT_HINT\t\t: " << service_status_address.dwWaitHint << "\n";
-                            std::wcout << "\n";
+                            wcout << "\tWIN32_EXIT_CODE\t\t: " << service_status_address.dwWin32ExitCode << "\n";
+                            wcout << "\tSERVICE_EXIT_CODE\t: " << service_status_address.dwServiceSpecificExitCode << "\n";
+                            wcout << "\tCHECKPOINT\t\t: " << service_status_address.dwCheckPoint << "\n";
+                            wcout << "\tWAIT_HINT\t\t: " << service_status_address.dwWaitHint << "\n";
+                            wcout << "\n";
                         }
                     }
                     CloseServiceHandle(schSCManager);
@@ -381,93 +380,93 @@ int main(int argc, const char *argv[])
                 }
                 else
                 {
-                    std::cout << "\nSERVICE_NAME: " << service_name << "\n";
-                    std::wcout << "\tTYPE\t\t\t: " << service_status_address.dwServiceType;
+                    cout << "\nSERVICE_NAME: " << service_name << "\n";
+                    wcout << "\tTYPE\t\t\t: " << service_status_address.dwServiceType;
                     switch (service_status_address.dwServiceType) 
                     {
                     case SERVICE_FILE_SYSTEM_DRIVER:
-                        std::wcout << "  FILE_SYSTEM_DRIVER\n";
+                        wcout << "  FILE_SYSTEM_DRIVER\n";
                         break;
                     case SERVICE_KERNEL_DRIVER:
-                        std::wcout << "  KERNEL_DRIVER\n";
+                        wcout << "  KERNEL_DRIVER\n";
                         break;
                     case SERVICE_WIN32_OWN_PROCESS:
-                        std::wcout << "  WIN32_OWN_PROCESS\n";
+                        wcout << "  WIN32_OWN_PROCESS\n";
                         break;
                     case SERVICE_WIN32_SHARE_PROCESS:
-                        std::wcout << "  WIN32_SHARE_PROCESS\n";
+                        wcout << "  WIN32_SHARE_PROCESS\n";
                         break;
                     case SERVICE_INTERACTIVE_PROCESS:
-                        std::wcout << "  INTERACTIVE_PROCESS\n";
+                        wcout << "  INTERACTIVE_PROCESS\n";
                         break;
                     case SERVICE_WIN32:
-                        std::wcout << "  WIN32\n";
+                        wcout << "  WIN32\n";
                         break;
                     default:
-                        std::wcout << service_status_address.dwServiceType << "\n";
+                        wcout << service_status_address.dwServiceType << "\n";
                         break;
                     };
 
-                    std::wcout << "\tSTATE\t\t\t: " << service_status_address.dwCurrentState;
+                    wcout << "\tSTATE\t\t\t: " << service_status_address.dwCurrentState;
 
                     switch (service_status_address.dwCurrentState)
                     {
                     case SERVICE_RUNNING:
-                        std::wcout << "  RUNNING\n";
+                        wcout << "  RUNNING\n";
                         break;
                     case SERVICE_STOPPED:
-                        std::wcout << "  STOPPED\n";
+                        wcout << "  STOPPED\n";
                         break;
                     case SERVICE_CONTINUE_PENDING:
-                        std::wcout << "  CONTINUING\n";
+                        wcout << "  CONTINUING\n";
                         break;
                     case SERVICE_PAUSE_PENDING:
-                        std::wcout << "  PAUSING\n";
+                        wcout << "  PAUSING\n";
                         break;
                     case SERVICE_PAUSED:
-                        std::wcout << "  PAUSED\n";
+                        wcout << "  PAUSED\n";
                         break;
                     case SERVICE_START_PENDING:
-                        std::wcout << "  STARTING\n";
+                        wcout << "  STARTING\n";
                         break;
                     case SERVICE_STOP_PENDING:
-                        std::wcout << "  STOPPING\n";
+                        wcout << "  STOPPING\n";
                         break;
                     default:
-                        std::wcout << service_status_address.dwCurrentState << "\n";
+                        wcout << service_status_address.dwCurrentState << "\n";
                         break;
                     };
 
-                    std::wcout << " \t\t\t\t ";
+                    wcout << " \t\t\t\t ";
                     switch (service_status_address.dwControlsAccepted)
                     {
                     case SERVICE_ACCEPT_NETBINDCHANGE:
-                        std::wcout << "(ACCEPT_NETBINDCHANGE)\n";
+                        wcout << "(ACCEPT_NETBINDCHANGE)\n";
                         break;
                     case SERVICE_ACCEPT_PARAMCHANGE:
-                        std::wcout << "(ACCEPT_PARAMCHANGE)\n";
+                        wcout << "(ACCEPT_PARAMCHANGE)\n";
                         break;
                     case SERVICE_ACCEPT_PAUSE_CONTINUE:
-                        std::wcout << "(ACCEPT_PAUSE_CONTINUE)\n";
+                        wcout << "(ACCEPT_PAUSE_CONTINUE)\n";
                         break;
                     case SERVICE_ACCEPT_PRESHUTDOWN:
-                        std::wcout << "(ACCEPT_PRESHUTDOWN)\n";
+                        wcout << "(ACCEPT_PRESHUTDOWN)\n";
                         break;
                     case SERVICE_ACCEPT_SHUTDOWN:
-                        std::wcout << "(ACCEPT_SHUTDOWN)\n";
+                        wcout << "(ACCEPT_SHUTDOWN)\n";
                         break;
                     case SERVICE_ACCEPT_STOP:
-                        std::wcout << "(STOPPABLE)\n";
+                        wcout << "(STOPPABLE)\n";
                         break;
                     default:
-                        std::wcout << "(" << service_status_address.dwControlsAccepted << ")\n";
+                        wcout << "(" << service_status_address.dwControlsAccepted << ")\n";
                         break;
                     };
-                    std::wcout << "\tWIN32_EXIT_CODE\t\t:" << service_status_address.dwWin32ExitCode << "\n";
-                    std::wcout << "\tSERVICE_EXIT_CODE\t:" << service_status_address.dwServiceSpecificExitCode << "\n";
-                    std::wcout << "\tCHECKPOINT\t\t:" << service_status_address.dwCheckPoint << "\n";
-                    std::wcout << "\tWAIT_HINT\t\t:" << service_status_address.dwWaitHint << "\n";
-                    std::wcout << "\n";
+                    wcout << "\tWIN32_EXIT_CODE\t\t:" << service_status_address.dwWin32ExitCode << "\n";
+                    wcout << "\tSERVICE_EXIT_CODE\t:" << service_status_address.dwServiceSpecificExitCode << "\n";
+                    wcout << "\tCHECKPOINT\t\t:" << service_status_address.dwCheckPoint << "\n";
+                    wcout << "\tWAIT_HINT\t\t:" << service_status_address.dwWaitHint << "\n";
+                    wcout << "\n";
                 }
 
                 CloseServiceHandle(schSCManager);
@@ -479,7 +478,7 @@ int main(int argc, const char *argv[])
         if (vm.count("create"))
         {
             //Open Service Control Manager
-            schSCManager = OpenSCManagerA(NULL, NULL, SC_MANAGER_CREATE_SERVICE); //All possible access rights
+            schSCManager = OpenSCManagerA(NULL, NULL, SC_MANAGER_ALL_ACCESS); //All possible access rights
 
             if (schSCManager == NULL) 
             {
@@ -487,12 +486,9 @@ int main(int argc, const char *argv[])
                 return 1;
             }
 
-           // std::cout << "Test: create parameter was passed";
+           // cout << "Test: create parameter was passed";          
 
-            //Since Boost Program Options can't check for a specific value
-            // Check if non-default values for required create service parameters have passed
-
-            std::string help_create = "\nDESCRIPTION:\n \tCreates a service entry in the registry and Service Database. \nUSAGE :\n"
+            string help_create = "\nDESCRIPTION:\n \tCreates a service entry in the registry and Service Database. \nUSAGE :\n"
                                         "\tsc <server> create[service name][binPath=] <option1> <option2>...\n\nOPTIONS :\nNOTE : The option name includes the equal sign.\n"
                                         "\tA space is required between the equal sign and the value.\n"
                                         "type = <own | share | interact | kernel | filesys | rec | userown | usershare>\n\t(default = own)\n"
@@ -506,49 +502,52 @@ int main(int argc, const char *argv[])
                                         "DisplayName = <display name>\n"
                                         "password = <password>\n";
 
+            // Since Boost Program Options can't check for a specific value
+            // Check if non-default values for required create service parameters have passed
+
             if (service_name == "")
             {
-                std::cout << help_create;
+                cout << help_create;
                 return 1;
             }
             else if (binary_path == "")
             {
-                std::cout << help_create;
+                cout << help_create;
                 return 1;
             }
 
             DWORD service_type;
             if (vm.count("type="))
             {
-                if (vm["type="].as<std::string>() == "rec")
+                if (vm["type="].as<string>() == "rec")
                 {
                     service_type = SERVICE_RECOGNIZER_DRIVER;
                 }
-                else if (vm["type="].as<std::string>() == "own")
+                else if (vm["type="].as<string>() == "own")
                 {
                     service_type = (SERVICE_WIN32_OWN_PROCESS | SERVICE_USER_OWN_PROCESS);
                 }
-                else if (vm["type="].as<std::string>() == "share")
+                else if (vm["type="].as<string>() == "share")
                 {
                     service_type = (SERVICE_WIN32_SHARE_PROCESS | SERVICE_USER_SHARE_PROCESS);
                 }
-                else if (vm["type="].as<std::string>() == "kernel")
+                else if (vm["type="].as<string>() == "kernel")
                 {
                     service_type = SERVICE_KERNEL_DRIVER;
                 }
-                else if (vm["type="].as<std::string>() == "filesys")
+                else if (vm["type="].as<string>() == "filesys")
                 {
                     service_type = SERVICE_FILE_SYSTEM_DRIVER;
                 }
-                else if (vm["type="].as<std::string>() == "interact type= own" || vm["type="].as<std::string>() == "own type= share")
+                else if (vm["type="].as<string>() == "interact type= own" || vm["type="].as<string>() == "own type= share")
                 {
                     service_type = (SERVICE_WIN32_OWN_PROCESS | SERVICE_INTERACTIVE_PROCESS);
                 }
-                else if (vm["type="].as<std::string>() == "interact type= share" || vm["type="].as<std::string>() == "share type= interact")
+                else if (vm["type="].as<string>() == "interact type= share" || vm["type="].as<string>() == "share type= interact")
                 {
                     service_type = (SERVICE_WIN32_SHARE_PROCESS | SERVICE_INTERACTIVE_PROCESS);
                 }
-                //Not doing the adapt switches, which isn't defined in documentation
+                //Not doing the adapt switches, because it isn't defined in documentation
             }
             else
             {
@@ -558,27 +557,27 @@ int main(int argc, const char *argv[])
             DWORD start_type;
             if (vm.count("start="))
             {
-                if (vm["start="].as<std::string>() == "boot")
+                if (vm["start="].as<string>() == "boot")
                 {
                     start_type = SERVICE_BOOT_START;
                 }
-                else if (vm["start="].as<std::string>() == "system")
+                else if (vm["start="].as<string>() == "system")
                 {
                     start_type = SERVICE_SYSTEM_START;
                 }
-                else if (vm["start="].as<std::string>() == "auto")
+                else if (vm["start="].as<string>() == "auto")
                 {
                     start_type = SERVICE_AUTO_START;
                 }
-                else if (vm["start="].as<std::string>() == "demand")
+                else if (vm["start="].as<string>() == "demand")
                 {
                     start_type = SERVICE_DEMAND_START;
                 }
-                else if (vm["start="].as<std::string>() == "disabled")
+                else if (vm["start="].as<string>() == "disabled")
                 {
                     start_type = SERVICE_DISABLED;
                 }
-                else if (vm["start="].as<std::string>() == "delayed-auto")
+                else if (vm["start="].as<string>() == "delayed-auto")
                 {
                     start_type = SERVICE_AUTO_START;
                 }
@@ -591,19 +590,19 @@ int main(int argc, const char *argv[])
             DWORD error_control;
             if (vm.count("error="))
             {
-                if (vm["error="].as<std::string>() == "normal")
+                if (vm["error="].as<string>() == "normal")
                 {
                     error_control = SERVICE_ERROR_NORMAL;
                 }
-                else if (vm["error="].as<std::string>() == "severe")
+                else if (vm["error="].as<string>() == "severe")
                 {
                     error_control = SERVICE_ERROR_SEVERE;
                 }
-                else if (vm["error="].as<std::string>() == "critical")
+                else if (vm["error="].as<string>() == "critical")
                 {
                     error_control = SERVICE_ERROR_CRITICAL;
                 }
-                else if (vm["error="].as<std::string>() == "ignore")
+                else if (vm["error="].as<string>() == "ignore")
                 {
                     error_control = SERVICE_ERROR_IGNORE;
                 }
@@ -616,20 +615,20 @@ int main(int argc, const char *argv[])
             LPDWORD tag = nullptr;
             if (vm.count("tag="))
             {
-                if (vm["tag="].as<std::string>() == "yes" || vm["tag="].as<std::string>() == "no")
+                if (vm["tag="].as<string>() == "yes" || vm["tag="].as<string>() == "no")
                 {
-                    if (vm["start="].as<std::string>() == "system")
+                    if (vm["start="].as<string>() == "system")
                     {
                         tag = vm["tag="].as<LPDWORD>();
                     }
-                    else if (vm["start="].as<std::string>() == "boot")
+                    else if (vm["start="].as<string>() == "boot")
                     {
                         tag = vm["tag="].as<LPDWORD>();
                     }
                 }
                 else
                 {
-                    tag = nullptr; //default value if incorrect value is passed
+                    tag = nullptr; //default value if incorrect value is passed to tag
                 }
             }
             else
@@ -674,7 +673,7 @@ int main(int argc, const char *argv[])
 
 
             const char* display_name_input;
-            display_name_input = service_name_input;//re-use the service name if no display name provided
+            display_name_input = service_name_input;//re-use the service name for the display name if no display name provided
 
             if (display_name != "")
             {
@@ -687,9 +686,11 @@ int main(int argc, const char *argv[])
                 const char* password_input;
                 password_input = password.c_str();
             }
-
+            
             const char* password_input;
             password_input = "";
+           
+            
 
             SC_HANDLE create_service;
             create_service = CreateServiceA(schSCManager, service_name_input,
@@ -713,6 +714,41 @@ int main(int argc, const char *argv[])
             CloseServiceHandle(schSCManager);
         }
 
+        // STOP
+        if (vm.count("stop"))
+        {
+            //Open Service Control Manager
+            schSCManager = OpenSCManagerA(NULL, NULL, SC_MANAGER_ALL_ACCESS); //All possible access rights
+
+            const char* service_name_input;
+            service_name_input = service_name.c_str();
+
+            SC_HANDLE service_handle;
+            service_handle = OpenServiceA(schSCManager,         // SCM database 
+                                            service_name_input, // name of service 
+                                            SERVICE_ALL_ACCESS);
+
+            SERVICE_STATUS service_status;
+            
+
+            if (ControlService(service_handle,
+                                SERVICE_CONTROL_STOP,
+                                &service_status))
+            {
+                wcout << "\nStopService SUCCESS" << "\n";
+                CloseServiceHandle(schSCManager);
+                CloseServiceHandle(service_handle);
+                return 0;
+            }
+            else
+            {
+                wcout << "\nStopService FAILED : " << GetLastError() << "\n";
+                CloseServiceHandle(schSCManager);
+                CloseServiceHandle(service_handle);
+                return 1;
+            }
+        }
+
         //DELETE
         if (vm.count("delete"))
         {
@@ -729,13 +765,13 @@ int main(int argc, const char *argv[])
 
             if (DeleteService(service_handle)) 
             {
-                std::wcout << "DeleteService SUCCESS";
+                wcout << "DeleteService SUCCESS";
                 CloseServiceHandle(schSCManager);
                 return 1;
             }
             else
             {
-                std::wcout << "OpenService FAILED %d" << GetLastError();
+                wcout << "OpenService FAILED %d" << GetLastError();
                 CloseServiceHandle(schSCManager);
                 return 1;
             }
@@ -757,70 +793,70 @@ int main(int argc, const char *argv[])
                 return 1;
             }
 
-           // std::cout << "Test: config parameter was passed";
+           // cout << "Test: config parameter was passed";
 
-            //Since Boost Program Options can't check for a specific value
+            string help_config = "\nDESCRIPTION :"
+                                "\n\t\tModifies a service entry in the registry and Service Database."
+                                "\nUSAGE :"
+                                "\n\t\tsc <server> config[service name] <option1> <option2>..."
+                                "\nOPTIONS :"
+                                "\nNOTE : The option name includes the equal sign."
+                                "\n\t\tA space is required between the equal sign and the value."
+                                "\n\t\tTo remove the dependency, use a single / as dependency value."
+                                "\ntype = <own | share | interact | kernel | filesys | rec | adapt | userown | usershare>"
+                                "\nstart = <boot | system | auto | demand | disabled | delayed - auto>"
+                                "\nerror = <normal | severe | critical | ignore>"
+                                "\nbinPath = <BinaryPathName to the.exe file>"
+                                "\ngroup = <LoadOrderGroup>"
+                                "\ntag = <yes | no>"
+                                "\ndepend = <Dependencies(separated by / (forward slash))>"
+                                "\nobj = <AccountName | ObjectName>"
+                                "\nDisplayName = <display name>"
+                                "\npassword = <password>";
+
+            // Since Boost Program Options can't check for a specific value
             // Check if non-default values for required create service parameters have passed
-
-            std::string help_config = "\nDESCRIPTION :"
-                                        "\n\t\tModifies a service entry in the registry and Service Database."
-                                        "\nUSAGE :"
-                                        "\n\t\tsc <server> config[service name] <option1> <option2>..."
-                                        "\nOPTIONS :"
-                                        "\nNOTE : The option name includes the equal sign."
-                                        "\n\t\tA space is required between the equal sign and the value."
-                                        "\n\t\tTo remove the dependency, use a single / as dependency value."
-                                        "\ntype = <own | share | interact | kernel | filesys | rec | adapt | userown | usershare>"
-                                        "\nstart = <boot | system | auto | demand | disabled | delayed - auto>"
-                                        "\nerror = <normal | severe | critical | ignore>"
-                                        "\nbinPath = <BinaryPathName to the.exe file>"
-                                        "\ngroup = <LoadOrderGroup>"
-                                        "\ntag = <yes | no>"
-                                        "\ndepend = <Dependencies(separated by / (forward slash))>"
-                                        "\nobj = <AccountName | ObjectName>"
-                                        "\nDisplayName = <display name>"
-                                        "\npassword = <password>";
             if (service_name == "")
             {
-                std::cout << help_config;
+                cout << help_config;
                 return 1;
             }
 
 
             if (binary_path == "")
             {
-                std::cout << help_config;
+                cout << help_config;
                 return 1;
             }
 
             DWORD service_type;
             if (vm.count("type="))
             {
-                if (vm["type="].as<std::string>() == "own")
+                if (vm["type="].as<string>() == "own")
                 {
                     service_type = SERVICE_WIN32_OWN_PROCESS ;
                 }
-                else if (vm["type="].as<std::string>() == "share")
+                else if (vm["type="].as<string>() == "share")
                 {
                     service_type = SERVICE_WIN32_SHARE_PROCESS ;
                 }
-                else if (vm["type="].as<std::string>() == "kernel")
+                else if (vm["type="].as<string>() == "kernel")
                 {
                     service_type = SERVICE_KERNEL_DRIVER;
                 }
-                else if (vm["type="].as<std::string>() == "filesys")
+                else if (vm["type="].as<string>() == "filesys")
                 {
                     service_type = SERVICE_FILE_SYSTEM_DRIVER;
                 }
-                else if (vm["type="].as<std::string>() == "interact type=own" || vm["type="].as<std::string>() == "own type=share")
+                else if (vm["type="].as<string>() == "interact type=own" || vm["type="].as<string>() == "own type=share")
                 {
                     service_type = SERVICE_INTERACTIVE_PROCESS;
                 }
-                else if (vm["type="].as<std::string>() == "interact type=share" || vm["type="].as<std::string>() == "share type=interact")
+                else if (vm["type="].as<string>() == "interact type=share" || vm["type="].as<string>() == "share type=interact")
                 {
                     service_type = (SERVICE_WIN32_SHARE_PROCESS | SERVICE_INTERACTIVE_PROCESS);
                 }
-                //Not doing the adapt switches, which isn't defined in documentation
+                //Not doing the adapt switches, because it isn't defined in documentation
             }
             else
             {
@@ -830,27 +866,27 @@ int main(int argc, const char *argv[])
             DWORD start_type;
             if (vm.count("start="))
             {
-                if (vm["start="].as<std::string>() == "boot")
+                if (vm["start="].as<string>() == "boot")
                 {
                     start_type = SERVICE_BOOT_START;
                 }
-                else if (vm["start="].as<std::string>() == "system")
+                else if (vm["start="].as<string>() == "system")
                 {
                     start_type = SERVICE_SYSTEM_START;
                 }
-                else if (vm["start="].as<std::string>() == "auto")
+                else if (vm["start="].as<string>() == "auto")
                 {
                     start_type = SERVICE_AUTO_START;
                 }
-                else if (vm["start="].as<std::string>() == "demand")
+                else if (vm["start="].as<string>() == "demand")
                 {
                     start_type = SERVICE_DEMAND_START;
                 }
-                else if (vm["start="].as<std::string>() == "disabled")
+                else if (vm["start="].as<string>() == "disabled")
                 {
                     start_type = SERVICE_DISABLED;
                 }
-                else if (vm["start="].as<std::string>() == "delayed-auto")
+                else if (vm["start="].as<string>() == "delayed-auto")
                 {
                     start_type = SERVICE_AUTO_START;
                 }
@@ -863,19 +899,19 @@ int main(int argc, const char *argv[])
             DWORD error_control;
             if (vm.count("error="))
             {
-                if (vm["error="].as<std::string>() == "normal")
+                if (vm["error="].as<string>() == "normal")
                 {
                     error_control = SERVICE_ERROR_NORMAL;
                 }
-                else if (vm["error="].as<std::string>() == "severe")
+                else if (vm["error="].as<string>() == "severe")
                 {
                     error_control = SERVICE_ERROR_SEVERE;
                 }
-                else if (vm["error="].as<std::string>() == "critical")
+                else if (vm["error="].as<string>() == "critical")
                 {
                     error_control = SERVICE_ERROR_CRITICAL;
                 }
-                else if (vm["error="].as<std::string>() == "ignore")
+                else if (vm["error="].as<string>() == "ignore")
                 {
                     error_control = SERVICE_ERROR_IGNORE;
                 }
@@ -889,13 +925,13 @@ int main(int argc, const char *argv[])
             LPDWORD tag = nullptr;  //default value - if you are not changing the existing tag.
             if (vm.count("tag="))
             {
-                if (vm["tag="].as<std::string>() == "yes" || vm["tag="].as<std::string>() == "no")
+                if (vm["tag="].as<string>() == "yes" || vm["tag="].as<string>() == "no")
                 {
-                    if (vm["start="].as<std::string>() == "system")
+                    if (vm["start="].as<string>() == "system")
                     {
                         tag = vm["tag="].as<LPDWORD>();
                     }
-                    else if (vm["start="].as<std::string>() == "boot")
+                    else if (vm["start="].as<string>() == "boot")
                     {
                         tag = vm["tag="].as<LPDWORD>();
                     }
@@ -979,7 +1015,7 @@ int main(int argc, const char *argv[])
         //FAILURE
         if(vm.count("failure"))
         {
-           // std::cout << "Test: failure parameter was passed\n";
+           // cout << "Test: failure parameter was passed\n";
             //Open Service Control Manager
             schSCManager = OpenSCManagerA(NULL, NULL, SC_MANAGER_ALL_ACCESS); //All possible access rights
 
@@ -989,10 +1025,7 @@ int main(int argc, const char *argv[])
                 return 1;
             }
 
-            //Since Boost Program Options can't check for a specific value
-            // Check if non-default values for required create service parameters have passed
-
-            std::string fail_message = "DESCRIPTION:\n\t\tChanges the actions upon failure\n"
+            string fail_message = "DESCRIPTION:\n\t\tChanges the actions upon failure\n"
                                         "USAGE :\n\t\t\tsc <server> failure[service name] <option1> <option2>..."
                                         "\nOPTIONS :\n"
                                         "\t\treset = <Length of period of no failures(in seconds)\n"
@@ -1001,63 +1034,61 @@ int main(int argc, const char *argv[])
                                         "\n\t\treboot = <Message broadcast before rebooting on failure>"
                                         "\n\t\tcommand = <Command line to be run on failure>"
                                         "\n\t\tactions = <Failure actions and their delay time(in milliseconds),\n" 
-                                        "\t\t\tseparated by / (forward slash) --e.g., run / 5000 / reboot / 800"
+                                        "\t\t\tseparated by / (forward slash) --e.g., run / 5000 | reboot / 800"
                                         "\t\t\tValid actions are <run | restart | reboot> >"
                                         "\t\t\t(Must be used in conjunction with the reset = option)";
+            
+            // Since Boost Program Options can't check for a specific value
+            // Check if non-default values for required create service parameters have passed
             if (service_name == "")
             {
-                std::cout << fail_message;
+                cout << fail_message;
                 return 1;
             }
 
-
-            std::vector<SC_ACTION> action_type;
+            vector<SC_ACTION> action_type;
             DWORD count_actions;
             
-            //compile action vectors, which are later converted to arrays
-            if (vm["actions="].as<std::string>() != "") 
+            //compile action vectors, which are converted to arrays
+            if (vm["actions="].as<string>() != "") 
             {
-                // separate multiple actions and their times
-                // Vector of string to save tokens
+                // separate multiple actions and their delay times
                 
-                std::vector<std::string> tokens;
+                vector<string> tokens;
 
-                std::stringstream check1(actions);
-                std::string item;
+                stringstream check1(actions);
+                string item;
 
-                // Tokenizing w.r.t. |
+                // Tokenizing w.r.t. "|"
                 while (getline(check1, item, '|'))
                 {
                     tokens.push_back(item);
                 }
 
-                //get action and time in correct format
+                // Get action and time in correct format
                 for (int i = 0; i < tokens.size(); i++)
                 {
-                     if (tokens[i].find("restart") != std::string::npos)
+                     if (tokens[i].find("restart") != string::npos)
                      {  
                         //get time entered after action and convert to DWORD
-                        std::string time = tokens[i].substr(tokens[i].find("/")+1);
-                        DWORD time_input = std::strtoul(time.c_str(), NULL, 16);
+                        string time = tokens[i].substr(tokens[i].find("/")+1);
+                        DWORD time_input = strtoul(time.c_str(), NULL, 16);
 
                         action_type.push_back({ SC_ACTION_RESTART , time_input});
-
                      }
-                     else if (tokens[i].find("reboot") != std::string::npos)
+                     else if (tokens[i].find("reboot") != string::npos)
                      {
-                         std::string time = tokens[i].substr(tokens[i].find("/") + 1);
-                         DWORD time_input = std::strtoul(time.c_str(), NULL, 16);
+                         string time = tokens[i].substr(tokens[i].find("/") + 1);
+                         DWORD time_input = strtoul(time.c_str(), NULL, 16);
 
                          action_type.push_back({ SC_ACTION_REBOOT , time_input });
-
                      }
-                     else if (tokens[i].find("run") != std::string::npos)
+                     else if (tokens[i].find("run") != string::npos)
                      {
-                         std::string time = tokens[i].substr(tokens[i].find("/") + 1);
-                         DWORD time_input = std::strtoul(time.c_str(), NULL, 16);
+                         string time = tokens[i].substr(tokens[i].find("/") + 1);
+                         DWORD time_input = strtoul(time.c_str(), NULL, 16);
 
                          action_type.push_back({SC_ACTION_RUN_COMMAND, time_input });
-
                      }
                 }
                  count_actions = (DWORD) tokens.size();
@@ -1068,13 +1099,14 @@ int main(int argc, const char *argv[])
                 count_actions = 1;
             }
             
-            //For some stupid reason, nested SC Actions must be passed as an array, not a vector
+            /* For some stupid reason, nested SC Actions must be passed as an array, not a vector
+               to ChangeServiceConfig2 CAN NOT pass the count of actions as a const int to 
+               initialize array, so pass 5, which should be big enough to handle all possible 
+               actions. Unused spaces in array  don't cause errors 
+            */
 
-            // CAN NOT pass the count of actions as a const int to initialize array, so pass 5,
-            // which should be big enough to handle all possible actions. Unused spaces in array 
-            // don't cause errors 
             SC_ACTION action_input[5];
-            std::copy(begin(action_type), end(action_type), action_input);
+            copy(begin(action_type), end(action_type), action_input);
              
             //convert reboot and command to LPSTR
             LPSTR reboot_input = const_cast<char*>(reboot.c_str());
@@ -1097,11 +1129,11 @@ int main(int argc, const char *argv[])
             
             if(ChangeServiceConfig2A(service_handle, SERVICE_CONFIG_FAILURE_ACTIONS, &fail_action))
             { 
-                std::cout << "FAILURECONFIG SUCCESS";
+                cout << "FAILURECONFIG SUCCESS";
             }
             else
             {
-                std::cout << "FAILURECONFIG FAIL with error: %d" << GetLastError();
+                cout << "FAILURECONFIG FAIL with error: %d" << GetLastError();
             }
         }
 
@@ -1116,13 +1148,13 @@ int main(int argc, const char *argv[])
                 return 1;
             }
 
-           // std::cout << "Test: qdescription parameter was passed";
+           // cout << "Test: qdescription parameter was passed";
 
-            // Check if non-default values for required create service parameters have passed
+            // Check if non-default values for required qdescription switch have been passed
             if (service_name == "")
             {
-                std::cout << "DESCRIPTION:\n\t\tRetrieves the description string of a service.\n";
-                std::cout << "USAGE:\n\t\tsc <server> qdescription[service name] < bufferSize>\n";
+                cout << "DESCRIPTION:\n\t\tRetrieves the description string of a service.\n";
+                cout << "USAGE:\n\t\tsc <server> qdescription[service name] < bufferSize>\n";
                 return 1;
             }
 
@@ -1134,7 +1166,7 @@ int main(int argc, const char *argv[])
             }
             else
             {
-                buffsize = 1024;
+                buffsize = 1024; // default value
             }
 
             //Convert parameter strings to const char* == LPCSTR
@@ -1148,7 +1180,7 @@ int main(int argc, const char *argv[])
             LPSERVICE_DESCRIPTION lpsd;
             DWORD dwBytesNeeded, cbBufSize;
 
-            //Get needed buffer space
+            // Get needed buffer space
             if (!QueryServiceConfig2(service_handle,
                                     SERVICE_CONFIG_DESCRIPTION,
                                     NULL,
@@ -1178,9 +1210,9 @@ int main(int argc, const char *argv[])
             }
             else
             {
-                std::cout << "QueryServiceConfig2 SUCCESS\n";
-                std::cout << "\nSERVICE_NAME: " << service_name << "\n";
-                std::wcout << "DESCRIPTION:  " << lpsd->lpDescription << "\n";
+                cout << "QueryServiceConfig2 SUCCESS\n";
+                cout << "\nSERVICE_NAME: " << service_name << "\n";
+                wcout << "DESCRIPTION:  " << lpsd->lpDescription << "\n";
             }
         }
 
@@ -1195,13 +1227,13 @@ int main(int argc, const char *argv[])
                 return 1;
             }
 
-           // std::cout << "Test: start parameter was passed";
+           // cout << "Test: start parameter was passed";
 
             // Check if non-default values for required create service parameters have passed
             if (service_name == "")
             {
-                std::cout << "DESCRIPTION:\n\t\tStarts a service running.";
-                std::cout << "USAGE:\n\t\tsc <server> start[service name] <arg1> <arg2> ...\n";
+                cout << "DESCRIPTION:\n\t\tStarts a service running.";
+                cout << "USAGE:\n\t\tsc <server> start[service name] <arg1> <arg2> ...\n";
                 return 1;
             }
 
@@ -1222,11 +1254,11 @@ int main(int argc, const char *argv[])
             // Check the status in case the service is not stopped. 
 
             if (!QueryServiceStatusEx(
-                                        service_handle,                     // handle to service 
-                                        SC_STATUS_PROCESS_INFO,         // information level
-                                        (LPBYTE)&service_status,             // address of structure
+                                        service_handle, // handle to service 
+                                        SC_STATUS_PROCESS_INFO, // information level
+                                        (LPBYTE)&service_status,  // address of structure
                                         sizeof(SERVICE_STATUS_PROCESS), // size of structure
-                                        &dwBytesNeeded))              // size needed if buffer is too small
+                                        &dwBytesNeeded)) // size needed if buffer is too small
             {
                 printf("QueryServiceStatusEx failed (%d)\n", GetLastError());
                 CloseServiceHandle(service_handle);
@@ -1235,7 +1267,7 @@ int main(int argc, const char *argv[])
             }
 
             // Check if the service is already running. It would be possible 
-            // to stop the service here, but for simplicity this example just returns. 
+            // to stop the service here, but for simplicity this example just returns and error int. 
 
             if (service_status.dwCurrentState != SERVICE_STOPPED && service_status.dwCurrentState != SERVICE_STOP_PENDING)
             {
@@ -1269,11 +1301,11 @@ int main(int argc, const char *argv[])
 
                 // Check the status until the service is no longer stop pending. 
 
-                if (!QueryServiceStatusEx(service_handle,                     // handle to service 
-                                          SC_STATUS_PROCESS_INFO,         // information level
-                                          (LPBYTE)&service_status,             // address of structure
+                if (!QueryServiceStatusEx(service_handle, // handle to service 
+                                          SC_STATUS_PROCESS_INFO, // information level
+                                          (LPBYTE)&service_status, // address of structure
                                           sizeof(SERVICE_STATUS_PROCESS), // size of structure
-                                          &dwBytesNeeded))              // size needed if buffer is too small
+                                          &dwBytesNeeded)) // size needed if buffer is too small
                 {
                     printf("QueryServiceStatusEx failed (%d)\n", GetLastError());
                     CloseServiceHandle(service_handle);
@@ -1284,7 +1316,6 @@ int main(int argc, const char *argv[])
                 if (service_status.dwCheckPoint > dwOldCheckPoint)
                 {
                     // Continue to wait and check.
-
                     dwStartTickCount = GetTickCount64();
                     dwOldCheckPoint = service_status.dwCheckPoint;
                 }
@@ -1312,11 +1343,11 @@ int main(int argc, const char *argv[])
 
             // Check the status until the service is no longer start pending. 
 
-            if (!QueryServiceStatusEx( service_handle,                     // handle to service 
-                                        SC_STATUS_PROCESS_INFO,         // info level
-                                        (LPBYTE)&service_status,             // address of structure
+            if (!QueryServiceStatusEx( service_handle, // handle to service 
+                                        SC_STATUS_PROCESS_INFO, // info level
+                                        (LPBYTE)&service_status, // address of structure
                                         sizeof(SERVICE_STATUS_PROCESS), // size of structure
-                                        &dwBytesNeeded))              // if buffer too small
+                                        &dwBytesNeeded)) // if buffer too small
             {
                 printf("QueryServiceStatusEx failed (%d)\n", GetLastError());
                 CloseServiceHandle(service_handle);
@@ -1376,94 +1407,94 @@ int main(int argc, const char *argv[])
 
             if (service_status.dwCurrentState == SERVICE_RUNNING)
             {
-                std::cout << "\nService started successfully.\n";
-                std::cout << "\nSERVICE_NAME: " << service_name << "\n";
-                std::wcout << "\tTYPE\t\t\t: " << service_status.dwServiceType;
+                cout << "\nService started successfully.\n";
+                cout << "\nSERVICE_NAME: " << service_name << "\n";
+                wcout << "\tTYPE\t\t\t: " << service_status.dwServiceType;
                 switch (service_status.dwServiceType)
                 {
                 case SERVICE_FILE_SYSTEM_DRIVER:
-                    std::wcout << "  FILE_SYSTEM_DRIVER\n";
+                    wcout << "  FILE_SYSTEM_DRIVER\n";
                     break;
                 case SERVICE_KERNEL_DRIVER:
-                    std::wcout << "  KERNEL_DRIVER\n";
+                    wcout << "  KERNEL_DRIVER\n";
                     break;
                 case SERVICE_WIN32_OWN_PROCESS:
-                    std::wcout << "  WIN32_OWN_PROCESS\n";
+                    wcout << "  WIN32_OWN_PROCESS\n";
                     break;
                 case SERVICE_WIN32_SHARE_PROCESS:
-                    std::wcout << "  WIN32_SHARE_PROCESS\n";
+                    wcout << "  WIN32_SHARE_PROCESS\n";
                     break;
                 case SERVICE_INTERACTIVE_PROCESS:
-                    std::wcout << "  INTERACTIVE_PROCESS\n";
+                    wcout << "  INTERACTIVE_PROCESS\n";
                     break;
                 case SERVICE_WIN32:
-                    std::wcout << "  WIN32\n";
+                    wcout << "  WIN32\n";
                     break;
                 default:
-                    std::wcout << service_status.dwServiceType << "\n";
+                    wcout << service_status.dwServiceType << "\n";
                     break;
                 };
 
-                std::wcout << "\tSTATE\t\t\t: " << service_status.dwCurrentState;
+                wcout << "\tSTATE\t\t\t: " << service_status.dwCurrentState;
 
                 switch (service_status.dwCurrentState)
                 {
                 case SERVICE_RUNNING:
-                    std::wcout << "  RUNNING\n";
+                    wcout << "  RUNNING\n";
                     break;
                 case SERVICE_STOPPED:
-                    std::wcout << "  STOPPED\n";
+                    wcout << "  STOPPED\n";
                     break;
                 case SERVICE_CONTINUE_PENDING:
-                    std::wcout << "  CONTINUING\n";
+                    wcout << "  CONTINUING\n";
                     break;
                 case SERVICE_PAUSE_PENDING:
-                    std::wcout << "  PAUSING\n";
+                    wcout << "  PAUSING\n";
                     break;
                 case SERVICE_PAUSED:
-                    std::wcout << "  PAUSED\n";
+                    wcout << "  PAUSED\n";
                     break;
                 case SERVICE_START_PENDING:
-                    std::wcout << "  STARTING\n";
+                    wcout << "  STARTING\n";
                     break;
                 case SERVICE_STOP_PENDING:
-                    std::wcout << "  STOPPING\n";
+                    wcout << "  STOPPING\n";
                     break;
                 default:
-                    std::wcout << service_status.dwCurrentState << "\n";
+                    wcout << service_status.dwCurrentState << "\n";
                     break;
                 };
 
-                std::wcout << " \t\t\t\t ";
+                wcout << " \t\t\t\t ";
                 switch (service_status.dwControlsAccepted)
                 {
                 case SERVICE_ACCEPT_NETBINDCHANGE:
-                    std::wcout << "(ACCEPT_NETBINDCHANGE)\n";
+                    wcout << "(ACCEPT_NETBINDCHANGE)\n";
                     break;
                 case SERVICE_ACCEPT_PARAMCHANGE:
-                    std::wcout << "(ACCEPT_PARAMCHANGE)\n";
+                    wcout << "(ACCEPT_PARAMCHANGE)\n";
                     break;
                 case SERVICE_ACCEPT_PAUSE_CONTINUE:
-                    std::wcout << "(ACCEPT_PAUSE_CONTINUE)\n";
+                    wcout << "(ACCEPT_PAUSE_CONTINUE)\n";
                     break;
                 case SERVICE_ACCEPT_PRESHUTDOWN:
-                    std::wcout << "(ACCEPT_PRESHUTDOWN)\n";
+                    wcout << "(ACCEPT_PRESHUTDOWN)\n";
                     break;
                 case SERVICE_ACCEPT_SHUTDOWN:
-                    std::wcout << "(ACCEPT_SHUTDOWN)\n";
+                    wcout << "(ACCEPT_SHUTDOWN)\n";
                     break;
                 case SERVICE_ACCEPT_STOP:
-                    std::wcout << "(STOPPABLE)\n";
+                    wcout << "(STOPPABLE)\n";
                     break;
                 default:
-                    std::wcout << "(" << service_status.dwControlsAccepted << ")\n";
+                    wcout << "(" << service_status.dwControlsAccepted << ")\n";
                     break;
                 };
-                std::wcout << "\tWIN32_EXIT_CODE\t\t:" << service_status.dwWin32ExitCode << "\n";
-                std::wcout << "\tSERVICE_EXIT_CODE\t:" << service_status.dwServiceSpecificExitCode << "\n";
-                std::wcout << "\tCHECKPOINT\t\t:" << service_status.dwCheckPoint << "\n";
-                std::wcout << "\tWAIT_HINT\t\t:" << service_status.dwWaitHint << "\n";
-                std::wcout << "\n";
+                wcout << "\tWIN32_EXIT_CODE\t\t:" << service_status.dwWin32ExitCode << "\n";
+                wcout << "\tSERVICE_EXIT_CODE\t:" << service_status.dwServiceSpecificExitCode << "\n";
+                wcout << "\tCHECKPOINT\t\t:" << service_status.dwCheckPoint << "\n";
+                wcout << "\tWAIT_HINT\t\t:" << service_status.dwWaitHint << "\n";
+                wcout << "\n";
             }
             else
             {
@@ -1481,7 +1512,7 @@ int main(int argc, const char *argv[])
     }
     catch (const boost::program_options::error &ex)
     {
-        std::cerr << ex.what() << '\n';
+        cerr << ex.what() << '\n';
     }
     return 0;
 }
