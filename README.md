@@ -4,14 +4,14 @@ sc-pseudo.exe
 sc-pseudo.exe is a recreation of Windows Service Control Manager, a command line utility. This code was built using a 64 bit architecture. 
 This script generates a system process that allows Windows to start, stop and interact with other processes. 
 
-If required parameters are not passed to the commands, sc-pseudo will print a help statement to screen.
+If required parameters are not passed to the commands, sc-pseudo will print a help statement to screen. Also a description of each command and switch will print to screen using <pre><code>sc-pseudo.exe --help</code></pre>
 
 ### Execution Examples
 Here are some examples of how to execute the code on an Adminster Command Prompt terminal:
  <pre><code>sc-pseudo.exe --create test --binpath=C:\Users\green_pastures\Desktop --displayname=Greens_Midterm_Deserves_An_A</code></pre>
  <pre><code>sc-pseudo.exe --query</code></pre>
  <pre><code>sc-pseudo.exe --query service_name</code></pre>
- <pre><code>sc-pseudo.exe --delete test --binpath=C:\Users\green_pastures\Desktop</code></pre>
+ <pre><code>sc-pseudo.exe --delete service_name --binpath=C:\Users\green_pastures\Desktop</code></pre>
 
 ### Options Commands:
 - query-----------Queries the status for a service, or
