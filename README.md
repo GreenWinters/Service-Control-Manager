@@ -7,10 +7,10 @@ This script generates a system process that allows Windows to start, stop and in
 If required parameters are not passed to the commands, sc-pseudo will print a help statement to screen.
 
 Here are some examples of how to execute the code on an Adminster Command Prompt terminal:
-  <sc-pseudo.exe --create test --binpath=C:\Users\green_pastures\Desktop --displayname=Greens_Midterm_Deserves_An_A>
-  <sc-pseudo.exe --query>
-  <sc-pseudo.exe --query service_name>
-  <sc-pseudo.exe --delete test --binpath=C:\Users\green_pastures\Desktop>
+ <pre><code>sc-pseudo.exe --create test --binpath=C:\Users\green_pastures\Desktop --displayname=Greens_Midterm_Deserves_An_A</code></pre>
+ <pre><code>sc-pseudo.exe --query</code></pre>
+ <pre><code>sc-pseudo.exe --query service_name</code></pre>
+ <pre><code>sc-pseudo.exe --delete test --binpath=C:\Users\green_pastures\Desktop</code></pre>
 
 ### Options Commands:
 - query-----------Queries the status for a service, or
