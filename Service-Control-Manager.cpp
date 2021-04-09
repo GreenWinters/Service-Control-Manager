@@ -36,12 +36,12 @@ int main(int argc, const char *argv[])
     {
         po::options_description desc("Switches");
         desc.add_options()
-            ("query", po::value<string>(&service_name)->implicit_value(""), "query") 
+            ("query", po::value<string>(&service_name)->implicit_value(""), "Obtains and displays information about the specified service, driver, type of service, or type of driver.") 
             ("create", po::value<string>(&service_name)->implicit_value(""), "Create a service. (add it to the registry)")
             ("qdescription", po::value<string>(&service_name), "Queries the description for a service.")
-            ("start", po::value<string>(&service_name), "start service")
+            ("start", po::value<string>(&service_name), "Start service")
             ("delete", po::value<string>(&service_name), "Delete a service (from the registry)")
-            ("config", po::value<string>(&service_name), "permanently change the service configuration")
+            ("config", po::value<string>(&service_name), "Permanently change the service configuration")
             ("failure", po::value<string>(&service_name), "Change the actions taken by a service upon failure")
             ("stop", po::value<string>(&service_name), "Sends a STOP request to a service.")
 
@@ -49,8 +49,8 @@ int main(int argc, const char *argv[])
             ("type=", po::value<string>(), "Specifies the type of services or type of drivers to be enumerated")
             ("state=", po::value<string>(), "Specifies the started state of the service to be enumerated.")
             ("bufsize", po::value<int>(), "Specifies the size (in bytes) of the enumeration buffer.")
-            ("ri=", po::value<int>(), "ri")
-            ("group=", po::value<string>(), "group")
+            ("ri=", po::value<int>(), "Specifies the index number at which enumeration is to begin or resume.")
+            ("group=", po::value<string>(), "Specifies the service group to be enumerated.")
 
             //create switches + type
             ("start=", po::value<string>(), "Specifies the start type for the service.")
