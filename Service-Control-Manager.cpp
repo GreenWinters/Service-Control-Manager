@@ -1,10 +1,10 @@
 /*
-Author: Bahirah Adewunmi
+Author: Green Winters
 March 16 - April 8, 2021
 Recreation of Service Control Manager-sc.exe [version 2.1]
 
 
-For more information on error codes visit:https://docs.microsoft.com/en-us/windows/win32/debug/system-error-codes
+For more information on error codes visit: https://docs.microsoft.com/en-us/windows/win32/debug/system-error-codes
 */
 
 #include <windows.h>
