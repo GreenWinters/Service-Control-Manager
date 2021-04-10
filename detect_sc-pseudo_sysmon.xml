@@ -1,0 +1,62 @@
+﻿<!--
+  Author:	Bahirah Adewunmi
+  CFRS 780
+  April 5, 2021
+-->
+
+<Sysmon schemaversion="4.50">
+	<!--SYSMON META CONFIG-->
+	<HashAlgorithms>md5,sha256,IMPHASH</HashAlgorithms> <!-- Both MD5 and SHA256 are the industry-standard algorithms. Remove IMPHASH if you do not use DLL import fingerprinting. -->
+	<CheckRevocation/> <!-- Check loaded drivers, log if their code-signing certificate has been revoked, in case malware stole one to sign a kernel driver -->
+
+	<EventFiltering>
+
+        <!--SYSMON EVENT ID 1 : PROCESS CREATION [ProcessCreate]-->
+          <!--COMMENT:	The process creation event provides extended information about a newly created process. -->
+
+        <RuleGroup name= "SC_Pseudo_Process_Create" groupRelation="or">
+            <ProcessCreate onmatch="include">
+                <Image condition="image">"sc-pseudo.exe"</Image>
+                <CommandLine condition="contains">create</CommandLine>
+                <CommandLine condition="contains">query</CommandLine>
+                <CommandLine condition="contains">qdescription</CommandLine>
+                <CommandLine condition="contains">start</CommandLine>
+            </ProcessCreate>
+        </RuleGroup>
+
+        <!--SYSMON EVENT ID 2 : FILE CREATION TIME RETROACTIVELY CHANGED IN THE FILESYSTEM [FileCreateTime]-->
+          <!--COMMENT: File create time
+            According to https://docs.microsoft.com/en-us/sysinternals/downloads/sysmon a FileCreateTime object tracks
+            a change file creation time event which is registered when a file creation time is explicitly modified by a process. -->
+        <RuleGroup name="SC_Modify" groupRelation="or">
+		      <FileCreateTime onmatch="include">
+                <Image condition="image">"sc-pseudo.exe"</Image>
+                <CommandLine condition="contains">config</CommandLine>
+          </FileCreateTime>
+        </RuleGroup>
+
+        <RuleGroup name="SC_Modify" groupRelation="or">
+		      <ProcessTerminate onmatch="include">
+                <Image condition="image">"sc-pseudo.exe"</Image>
+                <CommandLine condition="contains">stop</CommandLine>
+          </ProcessTerminate>
+        </RuleGroup>
+
+        <RuleGroup name="SC_Delete" groupRelation="or">
+          <FileDelete onmatch="include">
+                <Image condition="image">"sc-pseudo.exe"</Image>
+                <CommandLine condition="contains">delete</CommandLine>
+          </FileDelete>
+        </RuleGroup>
+
+        <RuleGroup name="SC_Registry_Changes" groupRelation="or">
+		      <RegistryEvent onmatch="include">
+                <Image condition="image">"sc-pseudo.exe"</Image>
+                <CommandLine condition="contains">delete</CommandLine>
+                <CommandLine condition="contains">create</CommandLine>
+                <CommandLine condition="contains">config</CommandLine>
+          </RegistryEvent>
+        </RuleGroup>
+
+	</EventFiltering>
+</Sysmon>
