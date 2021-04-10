@@ -7,7 +7,7 @@ This script generates a system process that allows Windows to start, stop and in
 If required switches are not passed to the commands, sc-pseudo will print a help statement to screen.
 
 ### Execution Examples
-Here are some examples of how to execute the code on an Adminster Command Prompt terminal:
+Here are some examples of how to execute the code on an Admin Command Prompt terminal:
  <pre><code>sc-pseudo.exe --create test --binpath=C:\Users\green_pastures\Desktop --displayname=Greens_Midterm_Deserves_An_A</code></pre>
  <pre><code>sc-pseudo.exe --query</code></pre>
  <pre><code>sc-pseudo.exe --query service_name</code></pre>
