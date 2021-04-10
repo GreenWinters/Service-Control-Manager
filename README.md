@@ -66,6 +66,6 @@ Optional switches not passed to query uses the default value defined by Microsof
 
 ### detect_sc-pseudo_sysmon.xml
 System Monitor (Sysmon) is an open source Windows system service and device driver that, once installed on a system, remains resident across system reboots to monitor and log system activity to the Windows event log. Pass detect_sc-pseudo_sysmon.xml as a configuration file to your installed instance of Sysmon to enable detection of sc-pseudo.exe commands:
-<pre><code>sysmon -accepteula -i "C:\green_pastures\path\detect_sc-pseudo_sysmon.xml</code></pre>
+<pre><code>sysmon -accepteula -i C:\green_pastures\path\detect_sc-pseudo_sysmon.xml</code></pre>
 
 Honest note: The rules are a bit of an overkill and redundant. Some of the rules can be removed and still detect activity.
